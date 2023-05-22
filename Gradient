@@ -1,0 +1,83 @@
+#SGD
+import numpy as np
+x = np.array([[0, 0, 1], [0,1,1], [1,0,1], [1,1,1]])
+y = np.array([[0,0,1,1]]).T
+w = np.random.random((3,1))
+
+for i in range (10000):
+    for p in range(4):
+        z = np.dot(x[p],w)
+        s = 1 / (1 + np.exp(-z))
+        error = y[p] - s
+        sD = s * (1 - s)
+        delta = error * sD
+        dw = (delta * x[p])
+        dw = np.array([dw]).T
+        w = w + dw
+print("weight:",w)
+newZ=np.dot(np.array([[0, 0, 1], [0,1,1], [1,0,1], [1,1,1]]), w)
+a=1 / (1 + np.exp(-newZ))
+print("Estimated answer:",a)
+
+#######################################
+
+# Batch
+import numpy as np
+x = np.array([[0, 0, 1], [0,1,1], [1,0,1], [1,1,1]])
+y = np.array([[0,0,1,1]]).T
+w = np.random.random((3,1))
+dwsum=np.zeros((3,1))
+for i in range (10000):
+    for p in range(4):
+        z = np.dot(x[p],w)
+        s = 1 / (1 + np.exp(-z))
+        error = y[p] - s
+        sD = s * (1 - s)
+        delta = error * sD
+        dw = (delta * x[p])
+        dw = np.array([dw]).T
+        dwsum=dwsum+dw
+        w = w + dw
+    dwave=dwsum/4
+    w=w+dwave
+print("weight:",w)
+newZ=np.dot(np.array([[0, 0, 1], [0,1,1], [1,0,1], [1,1,1]]), w)
+a=1 / (1 + np.exp(-newZ))
+print("Estimated answer:",a)
+
+###########################################
+
+# Mini_Batch
+import numpy as np
+x = np.array([[0, 0, 1], [0,1,1], [1,0,1], [1,1,1]])
+y = np.array([[0,0,1,1]]).T
+Batch_size = 2
+l=len(x)
+kk = l / Batch_size
+k=int(kk)
+r=0
+w = np.random.random((3,1))
+dwsum=np.zeros((3,1))
+for i in range (10000):
+    k=int(kk)
+    r=0
+    for p in range(Batch_size): 
+        for t in range (r,k):
+            z = np.dot(x[t],w)
+            s = 1 / (1 + np.exp(-z))
+            error = y[t] - s
+            sD = s * (1 - s)
+            delta = error * sD
+            dw = (delta * x[t])
+            dw = np.array([dw]).T
+            dwsum=dwsum+dw
+            w = w + dw
+        dwave=dwsum/kk
+        w=w+dwave
+        r=k
+        k=k+k   
+    
+print("weight:",w)
+newZ=np.dot(np.array([[0, 0, 1], [0,1,1], [1,0,1], [1,1,1]]), w)
+a=1 / (1 + np.exp(-newZ))
+print("Estimated answer:",a)
